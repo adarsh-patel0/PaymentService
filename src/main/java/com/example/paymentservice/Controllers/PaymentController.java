@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -54,12 +55,16 @@ public class PaymentController {
                 .getEntity()
                 .getStatus();
 
-        // Notify Order Service
+        Map<String, String> body = new HashMap<>();
+        body.put("orderId", orderId);
+        body.put("status", status);
+
         restTemplate.postForObject(
                 "http://order-service/orders/update-status",
-                Map.of("orderId", orderId, "status", status),
-                Void.class
+                body,
+                String.class
         );
+
     }
 
     // Signature verification helper
