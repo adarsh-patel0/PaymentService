@@ -11,9 +11,17 @@ public class PaymentService {
     @Autowired
     private PaymentGatewayStrategyChooser paymentGatewayStrategyChooser;
 
+    public String initiatePayment(String provider,
+                                  String orderId,
+                                  String email,
+                                  String phoneNumber,
+                                  Long amount) {
 
-    public String initiatePayment(String orderId, String email, String phoneNumber, Long amount){
-        PaymentGateway paymentGateway = paymentGatewayStrategyChooser.getBestPaymentGateway();
+        // Get correct payment gateway (razorpay / stripe)
+        PaymentGateway paymentGateway =
+                paymentGatewayStrategyChooser.getBestPaymentGateway(provider.toLowerCase());
+
+        // Generate payment link
         return paymentGateway.generatePaymentLink(orderId, email, phoneNumber, amount);
     }
 }
